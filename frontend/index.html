@@ -72,4 +72,610 @@
     background: var(--superficie); border: 1px solid var(--linea);
     padding: .4rem .85rem; border-radius: 999px; font-size: .85rem; font-weight: 500;
   }
-  .estado i { width:
+  .estado i { width: 9px; height: 9px; border-radius: 50%; background: var(--tinta-suave); display: block; }
+  .estado.ok i { background: var(--ok); animation: latido 2.2s ease-out infinite; }
+  .estado.demo i { background: var(--pronostico); }
+  .estado.fallo i { background: var(--error); }
+  @keyframes latido {
+    0% { box-shadow: 0 0 0 0 rgba(28, 138, 78, .5); }
+    70%, 100% { box-shadow: 0 0 0 9px rgba(28, 138, 78, 0); }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; margin-bottom: 1rem;
+  }
+  @media (min-width: 900px) { .hero { grid-template-columns: 5fr 7fr; } }
+
+  .panel {
+    background: var(--superficie); border: 1px solid var(--linea);
+    border-radius: var(--radio); padding: 1.25rem 1.4rem;
+  }
+  .panel h2 {
+    font-family: var(--fuente-titulo); font-size: 1rem; font-weight: 700;
+    margin: 0 0 .25rem; letter-spacing: -.005em;
+  }
+  .panel .sub { color: var(--tinta-suave); font-size: .88rem; margin: 0; }
+
+  .proxima {
+    background: linear-gradient(160deg, #0c2638 0%, #123b52 100%);
+    color: #eaf3f7; border: 0; position: relative; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: space-between; min-height: 250px;
+  }
+  .proxima .sub { color: #9db8c6; }
+  .proxima h2 { color: #eaf3f7; }
+  .proxima .rayo {
+    position: absolute; right: -18px; top: -14px; width: 190px; height: 190px;
+    opacity: .14; pointer-events: none;
+  }
+  .valor-grande {
+    font-family: var(--fuente-titulo); font-weight: 800; font-size: clamp(3.4rem, 8vw, 5rem);
+    line-height: 1; letter-spacing: -.04em; color: #ffc24d; margin: 1rem 0 .25rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .valor-grande small { font-size: 1.1rem; font-weight: 600; color: #cfe0ea; letter-spacing: 0; margin-left: .35rem; }
+  .tendencia { display: inline-flex; align-items: center; gap: .4rem; font-weight: 600; font-size: .95rem; }
+  .tendencia.sube { color: #ffb4a8; }
+  .tendencia.baja { color: #8de3b3; }
+  .intervalo { color: #9db8c6; font-size: .88rem; margin-top: .35rem; }
+
+  /* ---------- Controles ---------- */
+  .controles { display: flex; flex-wrap: wrap; gap: 1.25rem 2rem; align-items: flex-end; }
+  .grupo { display: flex; flex-direction: column; gap: .4rem; }
+  .grupo > span { font-size: .8rem; color: var(--tinta-suave); font-weight: 500; }
+  .segmentos {
+    display: inline-flex; background: var(--fondo); border: 1px solid var(--linea);
+    border-radius: 10px; padding: 3px; gap: 2px;
+  }
+  .segmentos button {
+    font: inherit; font-size: .88rem; font-weight: 600; color: var(--tinta-suave);
+    background: transparent; border: 0; padding: .4rem .8rem; border-radius: 7px; cursor: pointer;
+    transition: background .15s, color .15s;
+  }
+  .segmentos button:hover { color: var(--tinta); }
+  .segmentos button[aria-pressed="true"] { background: var(--tinta); color: var(--superficie); }
+  button:focus-visible, summary:focus-visible, select:focus-visible {
+    outline: 3px solid var(--pronostico); outline-offset: 2px;
+  }
+  select {
+    font: inherit; font-size: .88rem; font-weight: 600; color: var(--tinta);
+    background: var(--fondo); border: 1px solid var(--linea); border-radius: 10px;
+    padding: .5rem .7rem; cursor: pointer;
+  }
+  .btn-actualizar {
+    margin-left: auto; font: inherit; font-weight: 600; font-size: .9rem; cursor: pointer;
+    background: var(--pronostico); color: #2a1a00; border: 0; border-radius: 10px; padding: .6rem 1.1rem;
+  }
+  .btn-actualizar:hover { filter: brightness(1.05); }
+  .btn-actualizar:disabled { opacity: .6; cursor: progress; }
+
+  /* ---------- Gráfica ---------- */
+  .grafica-cab { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .75rem; margin-bottom: .75rem; }
+  .leyenda { display: flex; flex-wrap: wrap; gap: .5rem 1.1rem; font-size: .85rem; color: var(--tinta-suave); }
+  .leyenda span { display: inline-flex; align-items: center; gap: .4rem; }
+  .leyenda i { display: block; width: 18px; height: 4px; border-radius: 2px; }
+  .leyenda i.banda { height: 12px; background: var(--pronostico-suave); border: 1px solid var(--pronostico); }
+  .leyenda i.noche { height: 12px; background: var(--noche); opacity: .12; }
+  .lienzo { position: relative; height: 380px; }
+  @media (max-width: 600px) { .lienzo { height: 300px; } }
+
+  /* ---------- KPIs ---------- */
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1rem; margin: 1rem 0; }
+  .kpi { padding: 1rem 1.2rem; }
+  .kpi .etq { font-size: .82rem; color: var(--tinta-suave); font-weight: 500; }
+  .kpi .num {
+    font-family: var(--fuente-titulo); font-weight: 700; font-size: 1.75rem; letter-spacing: -.02em;
+    margin: .15rem 0; font-variant-numeric: tabular-nums;
+  }
+  .kpi .num small { font-size: .9rem; font-weight: 600; color: var(--tinta-suave); margin-left: .2rem; }
+  .kpi .pie { font-size: .82rem; color: var(--tinta-suave); }
+  .calidad { display: inline-block; font-size: .78rem; font-weight: 600; padding: .1rem .55rem; border-radius: 999px; }
+  .calidad.buena { background: rgba(28, 138, 78, .15); color: var(--ok); }
+  .calidad.media { background: rgba(242, 160, 7, .2); color: #a36a00; }
+  .calidad.mala { background: rgba(179, 38, 30, .15); color: var(--error); }
+  @media (prefers-color-scheme: dark) { .calidad.media { color: var(--pronostico); } }
+
+  /* ---------- Tabla y modelo ---------- */
+  details.panel { padding: 0; margin-top: 1rem; }
+  details.panel > summary {
+    cursor: pointer; list-style: none; padding: 1rem 1.4rem; font-weight: 700;
+    font-family: var(--fuente-titulo); display: flex; justify-content: space-between; align-items: center;
+  }
+  details.panel > summary::-webkit-details-marker { display: none; }
+  details.panel > summary::after { content: "+"; font-size: 1.4rem; color: var(--tinta-suave); transition: transform .2s; }
+  details.panel[open] > summary::after { transform: rotate(45deg); }
+  .cuerpo { padding: 0 1.4rem 1.25rem; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; font-variant-numeric: tabular-nums; }
+  th, td { text-align: right; padding: .55rem .6rem; border-bottom: 1px solid var(--linea); white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  th { font-weight: 600; color: var(--tinta-suave); font-size: .82rem; position: sticky; top: 0; background: var(--superficie); }
+  .modelo-lista { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: .6rem 1.5rem; margin: 0; }
+  .modelo-lista div { border-bottom: 1px solid var(--linea); padding: .4rem 0; }
+  .modelo-lista dt { font-size: .8rem; color: var(--tinta-suave); }
+  .modelo-lista dd { margin: 0; font-weight: 600; word-break: break-word; }
+
+  /* ---------- Error y carga ---------- */
+  .aviso-error {
+    display: none; background: rgba(179, 38, 30, .1); border: 1px solid var(--error);
+    color: var(--error); border-radius: var(--radio); padding: 1rem 1.25rem; margin-bottom: 1rem;
+  }
+  .aviso-error.visible { display: block; }
+  .aviso-error strong { display: block; margin-bottom: .15rem; }
+  .cargando .lienzo, .cargando .kpis, .cargando .valor-grande { opacity: .45; transition: opacity .2s; }
+
+  footer { margin-top: 2rem; color: var(--tinta-suave); font-size: .82rem; text-align: center; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .estado.ok i { animation: none; }
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="contenedor" id="app">
+
+  <header class="top">
+    <div class="marca">
+      <svg viewBox="0 0 40 40" aria-hidden="true">
+        <rect width="40" height="40" rx="11" fill="#0c2638"/>
+        <path d="M22.5 6 11 22h8l-2 12 12-17h-8z" fill="#ffc24d"/>
+      </svg>
+      <div>
+        <h1>Pulso</h1>
+        <p>Pronóstico horario de energía</p>
+      </div>
+    </div>
+    <div class="estado" id="estado" role="status"><i></i><span>Conectando…</span></div>
+  </header>
+
+  <div class="aviso-error" id="error" role="alert">
+    <strong id="error-titulo">No se pudo obtener el pronóstico</strong>
+    <span id="error-detalle"></span>
+  </div>
+
+  <!-- Hero + controles -->
+  <section class="hero" aria-label="Resumen">
+    <article class="panel proxima">
+      <svg class="rayo" viewBox="0 0 40 40" aria-hidden="true"><path d="M22.5 2 7 24h10l-3 14 19-24H22.5z" fill="#ffc24d"/></svg>
+      <div>
+        <h2>Próxima hora</h2>
+        <p class="sub" id="proxima-hora">—</p>
+      </div>
+      <div>
+        <div class="valor-grande"><span id="proxima-valor">—</span><small class="unidad"></small></div>
+        <div class="tendencia" id="proxima-tendencia"></div>
+        <div class="intervalo" id="proxima-intervalo"></div>
+      </div>
+    </article>
+
+    <article class="panel">
+      <h2>Ajusta la vista</h2>
+      <p class="sub" style="margin-bottom:1.1rem">Todas las horas se muestran en hora de Colombia (UTC−5).</p>
+      <div class="controles">
+        <div class="grupo">
+          <span id="lbl-horas">Horas a pronosticar</span>
+          <div class="segmentos" role="group" aria-labelledby="lbl-horas" data-param="horas">
+            <button type="button" data-v="6">6 h</button>
+            <button type="button" data-v="12">12 h</button>
+            <button type="button" data-v="24">24 h</button>
+            <button type="button" data-v="48">48 h</button>
+          </div>
+        </div>
+        <div class="grupo">
+          <span id="lbl-hist">Historia mostrada</span>
+          <div class="segmentos" role="group" aria-labelledby="lbl-hist" data-param="historia">
+            <button type="button" data-v="24">1 día</button>
+            <button type="button" data-v="48">2 días</button>
+            <button type="button" data-v="96">4 días</button>
+            <button type="button" data-v="168">7 días</button>
+          </div>
+        </div>
+        <div class="grupo">
+          <label for="confianza"><span style="font-size:.8rem;color:var(--tinta-suave);font-weight:500">Nivel de confianza</span></label>
+          <select id="confianza">
+            <option value="0.8">80 %</option>
+            <option value="0.9">90 %</option>
+            <option value="0.95" selected>95 %</option>
+            <option value="0.99">99 %</option>
+          </select>
+        </div>
+        <button class="btn-actualizar" id="btn-actualizar" type="button">Actualizar</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- Gráfica -->
+  <section class="panel" aria-label="Gráfica del histórico y el pronóstico">
+    <div class="grafica-cab">
+      <div>
+        <h2>Lo medido y lo que viene</h2>
+        <p class="sub">Las franjas oscuras marcan la noche (6 p. m. a 6 a. m.).</p>
+      </div>
+      <div class="leyenda">
+        <span><i style="background:var(--historico)"></i>Histórico</span>
+        <span><i style="background:var(--pronostico)"></i>Pronóstico</span>
+        <span><i class="banda"></i>Intervalo de confianza</span>
+        <span><i class="noche"></i>Noche</span>
+      </div>
+    </div>
+    <div class="lienzo"><canvas id="grafica" role="img" aria-label="Gráfica de línea con el histórico, el pronóstico y su intervalo de confianza"></canvas></div>
+  </section>
+
+  <!-- Indicadores -->
+  <section class="kpis" aria-label="Indicadores">
+    <article class="panel kpi">
+      <div class="etq">Pico esperado</div>
+      <div class="num"><span id="k-pico">—</span><small class="unidad"></small></div>
+      <div class="pie" id="k-pico-hora">—</div>
+    </article>
+    <article class="panel kpi">
+      <div class="etq">Valle esperado</div>
+      <div class="num"><span id="k-valle">—</span><small class="unidad"></small></div>
+      <div class="pie" id="k-valle-hora">—</div>
+    </article>
+    <article class="panel kpi">
+      <div class="etq">Promedio del pronóstico</div>
+      <div class="num"><span id="k-prom">—</span><small class="unidad"></small></div>
+      <div class="pie" id="k-prom-dif">—</div>
+    </article>
+    <article class="panel kpi">
+      <div class="etq">Último dato medido</div>
+      <div class="num"><span id="k-ultimo">—</span><small class="unidad"></small></div>
+      <div class="pie" id="k-ultimo-hora">—</div>
+    </article>
+    <article class="panel kpi">
+      <div class="etq">Calidad de los datos</div>
+      <div class="num" style="font-size:1.25rem;margin:.35rem 0"><span class="calidad" id="k-calidad">—</span></div>
+      <div class="pie" id="k-calidad-det">—</div>
+    </article>
+  </section>
+
+  <!-- Tabla -->
+  <details class="panel">
+    <summary>Ver pronóstico hora por hora</summary>
+    <div class="cuerpo">
+      <table>
+        <thead>
+          <tr><th>Hora (Colombia)</th><th>Pronóstico</th><th>Mínimo</th><th>Máximo</th></tr>
+        </thead>
+        <tbody id="tabla"></tbody>
+      </table>
+    </div>
+  </details>
+
+  <!-- Modelo -->
+  <details class="panel" id="det-modelo">
+    <summary>Sobre el modelo</summary>
+    <div class="cuerpo"><dl class="modelo-lista" id="modelo"><div><dd>Cargando…</dd></div></dl></div>
+  </details>
+
+  <footer>Modelo SARIMA · Datos de sensores en InfluxDB · Interfaz Pulso</footer>
+</div>
+
+<script>
+(() => {
+  "use strict";
+
+  /* ======== Ajusta estos dos textos a TU serie ======== */
+  const VARIABLE = "energía";   // p. ej. "consumo", "potencia", "temperatura"
+  const UNIDAD = "";            // p. ej. "kWh", "W", "°C". Déjala vacía si no la conoces.
+
+  const ZONA = "America/Bogota";
+  const estado = { horas: 12, historia: 48 };
+  let grafica = null;
+
+  const $ = (id) => document.getElementById(id);
+  const fmtNum = (n, d = 1) =>
+    Number(n).toLocaleString("es-CO", { minimumFractionDigits: d, maximumFractionDigits: d });
+  const fmtHoraCorta = (iso) =>
+    new Date(iso).toLocaleTimeString("es-CO", { hour: "numeric", minute: "2-digit", hour12: true, timeZone: ZONA });
+  const fmtFecha = (iso) =>
+    new Date(iso).toLocaleString("es-CO", {
+      weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit", hour12: true, timeZone: ZONA,
+    });
+  const horaColombia = (iso) =>
+    Number(new Date(iso).toLocaleString("en-US", { hour: "numeric", hour12: false, timeZone: ZONA })) % 24;
+  const diaCorto = (iso) =>
+    new Date(iso).toLocaleDateString("es-CO", { weekday: "short", day: "numeric", timeZone: ZONA });
+
+  document.querySelectorAll(".unidad").forEach((el) => (el.textContent = UNIDAD));
+
+  /* ---------- Plugin: franjas de noche ---------- */
+  const franjasNoche = {
+    id: "franjasNoche",
+    beforeDatasetsDraw(chart, _args, opts) {
+      const { ctx, chartArea, scales } = chart;
+      if (!chartArea || !opts.horas) return;
+      const x = scales.x;
+      ctx.save();
+      ctx.fillStyle = opts.color;
+      const n = opts.horas.length;
+      const paso = n > 1 ? (x.getPixelForValue(1) - x.getPixelForValue(0)) : 0;
+      let inicio = null;
+      for (let i = 0; i <= n; i++) {
+        const noche = i < n && (opts.horas[i] >= 18 || opts.horas[i] < 6);
+        if (noche && inicio === null) inicio = i;
+        if (!noche && inicio !== null) {
+          const x0 = x.getPixelForValue(inicio) - paso / 2;
+          const x1 = x.getPixelForValue(i - 1) + paso / 2;
+          const izq = Math.max(x0, chartArea.left);
+          const der = Math.min(x1, chartArea.right);
+          ctx.fillRect(izq, chartArea.top, der - izq, chartArea.bottom - chartArea.top);
+          inicio = null;
+        }
+      }
+      ctx.restore();
+    },
+  };
+
+  /* ---------- Plugin: línea de "último dato" ---------- */
+  const lineaAhora = {
+    id: "lineaAhora",
+    afterDatasetsDraw(chart, _args, opts) {
+      if (opts.indice == null) return;
+      const { ctx, chartArea, scales } = chart;
+      const px = scales.x.getPixelForValue(opts.indice);
+      ctx.save();
+      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = opts.color;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(px, chartArea.top);
+      ctx.lineTo(px, chartArea.bottom);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = opts.color;
+      ctx.font = "600 11px Figtree, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("Último dato", px + 6, chartArea.top + 12);
+      ctx.restore();
+    },
+  };
+
+  const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+  function dibujarGrafica(d) {
+    const hist = d.historico, pred = d.prediccion;
+    const tiempos = [...hist.map((h) => h.tiempo), ...pred.map((p) => p.tiempo)];
+    const nH = hist.length;
+    const relleno = (n) => Array(n).fill(null);
+
+    const serieHist = [...hist.map((h) => h.valor), ...relleno(pred.length)];
+    // El pronóstico arranca desde el último dato para que las líneas se unan
+    const ultimo = hist[nH - 1];
+    const seriePred = [...relleno(nH - 1), ultimo.valor, ...pred.map((p) => p.prediccion)];
+    const inf = [...relleno(nH - 1), ultimo.valor, ...pred.map((p) => p.limite_inferior)];
+    const sup = [...relleno(nH - 1), ultimo.valor, ...pred.map((p) => p.limite_superior)];
+
+    const colHist = css("--historico"), colPred = css("--pronostico"), colSuave = css("--pronostico-suave");
+    const colTexto = css("--tinta-suave"), colLinea = css("--linea"), colNoche = css("--noche");
+    const esOscuro = matchMedia("(prefers-color-scheme: dark)").matches;
+
+    const datos = {
+      labels: tiempos,
+      datasets: [
+        { label: "Mínimo", data: inf, borderWidth: 0, pointRadius: 0, fill: false, order: 4 },
+        { label: "Máximo", data: sup, borderWidth: 0, pointRadius: 0, fill: "-1", backgroundColor: colSuave, order: 4 },
+        { label: "Histórico", data: serieHist, borderColor: colHist, backgroundColor: colHist,
+          borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 5, tension: .3, order: 2 },
+        { label: "Pronóstico", data: seriePred, borderColor: colPred, backgroundColor: colPred,
+          borderWidth: 3, pointRadius: 0, pointHoverRadius: 5, tension: .3, borderDash: [7, 4], order: 1 },
+      ],
+    };
+
+    const opciones = {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      animation: { duration: 600 },
+      scales: {
+        x: {
+          grid: { display: false },
+          border: { color: colLinea },
+          ticks: {
+            color: colTexto, maxRotation: 0, autoSkipPadding: 22,
+            callback(valor) {
+              const iso = tiempos[valor];
+              const h = horaColombia(iso);
+              return h === 0 ? diaCorto(iso) : fmtHoraCorta(iso).replace(":00", "");
+            },
+          },
+        },
+        y: {
+          grid: { color: colLinea },
+          border: { display: false },
+          ticks: { color: colTexto, callback: (v) => fmtNum(v, 0) },
+          title: { display: !!UNIDAD, text: UNIDAD, color: colTexto },
+        },
+      },
+      plugins: {
+        legend: { display: false },
+        franjasNoche: { horas: tiempos.map(horaColombia), color: esOscuro ? "rgba(0,0,0,.32)" : "rgba(12,38,56,.08)" },
+        lineaAhora: { indice: nH - 1, color: colTexto },
+        tooltip: {
+          backgroundColor: colNoche === "#000" ? "#1a3447" : "#0c2638",
+          titleColor: "#fff", bodyColor: "#dbe8ef", padding: 12, cornerRadius: 10,
+          filter: (item) => item.raw != null && item.dataset.label !== "Mínimo" && item.dataset.label !== "Máximo",
+          callbacks: {
+            title: (items) => fmtFecha(tiempos[items[0].dataIndex]),
+            label(item) {
+              const base = `${item.dataset.label}: ${fmtNum(item.raw, 1)} ${UNIDAD}`.trim();
+              if (item.dataset.label === "Pronóstico" && item.dataIndex >= nH) {
+                const p = pred[item.dataIndex - nH];
+                return `${base}  (${fmtNum(p.limite_inferior, 0)} – ${fmtNum(p.limite_superior, 0)})`;
+              }
+              return base;
+            },
+          },
+        },
+      },
+    };
+
+    if (grafica) grafica.destroy();
+    grafica = new Chart($("grafica"), { type: "line", data: datos, options: opciones, plugins: [franjasNoche, lineaAhora] });
+  }
+
+  /* ---------- Indicadores ---------- */
+  function pintarResumen(d) {
+    const pred = d.prediccion, hist = d.historico;
+    const ultimo = hist[hist.length - 1];
+    const u = UNIDAD ? ` ${UNIDAD}` : "";
+
+    // Próxima hora
+    const p0 = pred[0];
+    $("proxima-hora").textContent = fmtFecha(p0.tiempo);
+    $("proxima-valor").textContent = fmtNum(p0.prediccion, 1);
+    const dif = p0.prediccion - ultimo.valor;
+    const pct = ultimo.valor ? (dif / ultimo.valor) * 100 : 0;
+    const t = $("proxima-tendencia");
+    t.className = "tendencia " + (dif >= 0 ? "sube" : "baja");
+    t.textContent = `${dif >= 0 ? "▲" : "▼"} ${fmtNum(Math.abs(pct), 1)} % frente al último dato`;
+    $("proxima-intervalo").textContent =
+      `Rango probable (${Math.round(d.confianza * 100)} %): ${fmtNum(p0.limite_inferior, 0)} a ${fmtNum(p0.limite_superior, 0)}${u}`;
+
+    // Pico y valle
+    const pico = pred.reduce((a, b) => (b.prediccion > a.prediccion ? b : a));
+    const valle = pred.reduce((a, b) => (b.prediccion < a.prediccion ? b : a));
+    $("k-pico").textContent = fmtNum(pico.prediccion, 1);
+    $("k-pico-hora").textContent = fmtFecha(pico.tiempo);
+    $("k-valle").textContent = fmtNum(valle.prediccion, 1);
+    $("k-valle-hora").textContent = fmtFecha(valle.tiempo);
+
+    // Promedio frente al histórico mostrado
+    const prom = pred.reduce((s, p) => s + p.prediccion, 0) / pred.length;
+    const promH = hist.reduce((s, h) => s + h.valor, 0) / hist.length;
+    const difP = promH ? ((prom - promH) / promH) * 100 : 0;
+    $("k-prom").textContent = fmtNum(prom, 1);
+    $("k-prom-dif").textContent = `${difP >= 0 ? "+" : "−"}${fmtNum(Math.abs(difP), 1)} % vs. el histórico mostrado`;
+
+    // Último dato
+    $("k-ultimo").textContent = fmtNum(ultimo.valor, 1);
+    $("k-ultimo-hora").textContent = fmtFecha(d.ultima_observacion || ultimo.tiempo);
+
+    // Calidad
+    const rell = d.horas_rellenadas ?? 0, ctx = d.horas_contexto_usadas ?? 0;
+    const ratio = ctx ? rell / ctx : 0;
+    const q = $("k-calidad");
+    if (rell === 0) { q.textContent = "Completos"; q.className = "calidad buena"; }
+    else if (ratio < 0.05) { q.textContent = "Buenos"; q.className = "calidad buena"; }
+    else if (ratio < 0.15) { q.textContent = "Con huecos"; q.className = "calidad media"; }
+    else { q.textContent = "Poco fiables"; q.className = "calidad mala"; }
+    $("k-calidad-det").textContent = rell === 0
+      ? `${ctx} h de contexto sin huecos`
+      : `${rell} de ${ctx} h se rellenaron (el sensor estuvo caído)`;
+
+    // Tabla
+    $("tabla").innerHTML = pred.map((p) => `
+      <tr>
+        <td>${fmtFecha(p.tiempo)}</td>
+        <td><strong>${fmtNum(p.prediccion, 1)}</strong></td>
+        <td>${fmtNum(p.limite_inferior, 1)}</td>
+        <td>${fmtNum(p.limite_superior, 1)}</td>
+      </tr>`).join("");
+  }
+
+  /* ---------- Red ---------- */
+  function mostrarError(titulo, detalle) {
+    $("error-titulo").textContent = titulo;
+    $("error-detalle").textContent = detalle;
+    $("error").classList.add("visible");
+  }
+  const ocultarError = () => $("error").classList.remove("visible");
+
+  async function pedir(url) {
+    let r;
+    try { r = await fetch(url); }
+    catch { throw new Error("No hay conexión con el servidor. Revisa que la API esté corriendo en el puerto 8000."); }
+    let cuerpo = null;
+    try { cuerpo = await r.json(); } catch { /* respuesta sin JSON */ }
+    if (!r.ok) {
+      const det = cuerpo && cuerpo.detail;
+      throw new Error(typeof det === "string" ? det : det ? JSON.stringify(det) : `El servidor respondió con el código ${r.status}.`);
+    }
+    return cuerpo;
+  }
+
+  async function cargarPrediccion() {
+    const btn = $("btn-actualizar");
+    btn.disabled = true; btn.textContent = "Actualizando…";
+    $("app").classList.add("cargando");
+    ocultarError();
+    try {
+      const conf = $("confianza").value;
+      const d = await pedir(`/api/prediccion?horas=${estado.horas}&historia=${estado.historia}&confianza=${conf}`);
+      if (!d.prediccion || !d.prediccion.length || !d.historico || !d.historico.length) {
+        throw new Error("La API respondió, pero sin datos para graficar.");
+      }
+      pintarResumen(d);
+      dibujarGrafica(d);
+    } catch (e) {
+      mostrarError("No se pudo obtener el pronóstico", e.message);
+    } finally {
+      btn.disabled = false; btn.textContent = "Actualizar";
+      $("app").classList.remove("cargando");
+    }
+  }
+
+  async function cargarSalud() {
+    const el = $("estado"), txt = el.querySelector("span");
+    try {
+      const s = await pedir("/api/salud");
+      if (s.modelo_demo) { el.className = "estado demo"; txt.textContent = "Modo demo · datos sintéticos"; }
+      else if (s.modelo_cargado && s.influx_configurado) { el.className = "estado ok"; txt.textContent = "En línea · datos reales"; }
+      else { el.className = "estado fallo"; txt.textContent = s.modelo_cargado ? "Falta configurar InfluxDB" : "Falta cargar el modelo"; }
+    } catch {
+      el.className = "estado fallo"; txt.textContent = "Sin conexión con la API";
+    }
+  }
+
+  const ETIQUETAS = {
+    order: "Orden (p, d, q)", seasonal_order: "Orden estacional (P, D, Q, s)", metricas: "Métricas",
+    fecha_entrenamiento: "Entrenado el", mae: "MAE", rmse: "RMSE", mape: "MAPE",
+  };
+  function aplanar(obj, prefijo = "") {
+    return Object.entries(obj).flatMap(([k, v]) => {
+      const clave = prefijo ? `${prefijo} · ${k}` : k;
+      if (v && typeof v === "object" && !Array.isArray(v)) return aplanar(v, ETIQUETAS[k] || k);
+      return [[ETIQUETAS[k] ? (prefijo ? `${prefijo} · ${ETIQUETAS[k]}` : ETIQUETAS[k]) : clave.replace(/_/g, " "), v]];
+    });
+  }
+  async function cargarModelo() {
+    const lista = $("modelo");
+    try {
+      const m = await pedir("/api/modelo");
+      lista.innerHTML = aplanar(m).map(([k, v]) => {
+        const val = typeof v === "number" ? fmtNum(v, Number.isInteger(v) ? 0 : 3)
+          : Array.isArray(v) ? v.join(", ")
+          : /^\d{4}-\d{2}-\d{2}T/.test(String(v)) ? fmtFecha(v) : String(v);
+        return `<div><dt>${k}</dt><dd>${val}</dd></div>`;
+      }).join("");
+    } catch (e) {
+      lista.innerHTML = `<div><dd>${e.message}</dd></div>`;
+    }
+  }
+
+  /* ---------- Eventos ---------- */
+  document.querySelectorAll(".segmentos").forEach((grupo) => {
+    const param = grupo.dataset.param;
+    const marcar = () => grupo.querySelectorAll("button").forEach((b) =>
+      b.setAttribute("aria-pressed", String(Number(b.dataset.v) === estado[param])));
+    marcar();
+    grupo.addEventListener("click", (e) => {
+      const b = e.target.closest("button");
+      if (!b) return;
+      estado[param] = Number(b.dataset.v);
+      marcar();
+      cargarPrediccion();
+    });
+  });
+  $("confianza").addEventListener("change", cargarPrediccion);
+  $("btn-actualizar").addEventListener("click", () => { cargarSalud(); cargarPrediccion(); });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", cargarPrediccion);
+
+  cargarSalud();
+  cargarPrediccion();
+  cargarModelo();
+})();
+</script>
+</body>
+</html>
