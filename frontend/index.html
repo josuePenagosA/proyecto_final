@@ -1,63 +1,75 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pronóstico</title>
-<!--
-  ESQUELETO DEL FRONTEND
-  ======================
-  Esta página ya funciona: pide el pronóstico a la API y lo muestra en una
-  tabla sin formato. Tu trabajo es convertirla en una interfaz de verdad.
-
-  Requisitos mínimos (ver README, Fase 2):
-    1. Una gráfica con el histórico, el pronóstico y el intervalo de confianza.
-    2. Las horas en hora de Colombia (la API las entrega en UTC, con "Z").
-    3. Al menos un indicador destacado (p.ej. valor de la próxima hora,
-       máximo esperado, hora del último dato).
-    4. Controles para elegir cuántas horas pronosticar.
-    5. Un mensaje claro cuando la API responde con error.
-
-  Puedes usar cualquier librería de gráficas cargada desde un CDN
-  (Chart.js, Plotly, ECharts...) y poner archivos .css o .js en esta misma
-  carpeta: se sirven en /static/<nombre>.
-
-  Endpoints disponibles (pruébalos en /docs):
-    GET /api/prediccion?horas=12&historia=48&confianza=0.95
-    GET /api/historico?horas=48
-    GET /api/modelo
-    GET /api/salud
--->
-</head>
-<body>
-  <h1>Pronóstico</h1>
-  <p id="estado">Consultando la API…</p>
-  <table border="1" cellpadding="4">
-    <thead><tr><th>tiempo (UTC)</th><th>prediccion</th><th>limite_inferior</th><th>limite_superior</th></tr></thead>
-    <tbody id="filas"></tbody>
-  </table>
-
-<script>
-async function cargar() {
-  const estado = document.getElementById("estado");
-  try {
-    const respuesta = await fetch("/api/prediccion?horas=12&historia=48");
-    const datos = await respuesta.json();
-    if (!respuesta.ok) throw new Error(datos.detail);
-
-    // datos.historico  -> [{tiempo, valor}, ...]            (horas pasadas)
-    // datos.prediccion -> [{tiempo, prediccion, limite_inferior, limite_superior}, ...]
-    console.log(datos);   // abre la consola del navegador (F12) para explorarlo
-
-    document.getElementById("filas").innerHTML = datos.prediccion.map(p =>
-      `<tr><td>${p.tiempo}</td><td>${p.prediccion}</td><td>${p.limite_inferior}</td><td>${p.limite_superior}</td></tr>`
-    ).join("");
-    estado.textContent = `Último dato real: ${datos.ultima_observacion}`;
-  } catch (error) {
-    estado.textContent = "Error: " + error.message;
+<title>Pulso · Pronóstico de energía</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --fondo: #e9f0f3;
+    --superficie: #f8fbfc;
+    --tinta: #0c2638;
+    --tinta-suave: #4f6677;
+    --linea: #d3dfe5;
+    --noche: #0c2638;
+    --historico: #0f7f86;
+    --pronostico: #f2a007;
+    --pronostico-suave: rgba(242, 160, 7, .18);
+    --error: #b3261e;
+    --ok: #1c8a4e;
+    --radio: 14px;
+    --fuente-titulo: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --fuente: "Figtree", "Segoe UI", system-ui, sans-serif;
   }
-}
-cargar();
-</script>
-</body>
-</html>
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fondo: #0a1a26;
+      --superficie: #112636;
+      --tinta: #eaf3f7;
+      --tinta-suave: #98afbd;
+      --linea: #1f3a4d;
+      --noche: #000;
+      --historico: #35c4cc;
+      --pronostico: #ffb733;
+      --pronostico-suave: rgba(255, 183, 51, .16);
+      --error: #ff8a80;
+      --ok: #5ed79a;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: 1rem; }
+  body {
+    margin: 0;
+    background: var(--fondo);
+    color: var(--tinta);
+    font-family: var(--fuente);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .contenedor { max-width: 1180px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+
+  /* ---------- Encabezado ---------- */
+  header.top {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 1rem; margin-bottom: 1.5rem;
+  }
+  .marca { display: flex; align-items: center; gap: .75rem; }
+  .marca svg { width: 40px; height: 40px; flex: none; }
+  .marca h1 {
+    font-family: var(--fuente-titulo); font-weight: 800; font-size: 1.6rem;
+    letter-spacing: -.02em; margin: 0; line-height: 1.1;
+  }
+  .marca p { margin: 0; color: var(--tinta-suave); font-size: .9rem; }
+
+  .estado {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: var(--superficie); border: 1px solid var(--linea);
+    padding: .4rem .85rem; border-radius: 999px; font-size: .85rem; font-weight: 500;
+  }
+  .estado i { width:
